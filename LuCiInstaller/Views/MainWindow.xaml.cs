@@ -1,4 +1,5 @@
 ﻿using LuCiInstaller.ViewModel;
+using Microsoft.Win32;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,6 +21,24 @@ namespace LuCiInstaller.Views
           public MainWindow()
           {
                InitializeComponent();
+               RegistryKey regkey = Registry.CurrentUser.CreateSubKey("Software\\LuCiInstall");
+               //mo registry khoi dong cung win
+               RegistryKey regstart = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run");
+               string keyvalue = "1";
+               //string subkey = "Software\\ManhQuyen";
+               try
+               {
+                    //chen gia tri key
+                    regkey.SetValue("Index", keyvalue);
+                    //regstart.SetValue("taoregistrytronghethong", "E:\\Studing\\Bai Tap\\CSharp\\Channel 4\\bai temp\\tao registry trong he thong\\tao registry trong he thong\\bin\\Debug\\tao registry trong he thong.exe");
+                    regstart.SetValue("LuCiInstall", Application.Current + "\\LuCiInstaller.exe");
+                    ////dong tien trinh ghi key
+                    //regkey.Close();
+               }
+               catch (System.Exception ex)
+               {
+               }
+
                DataContext = new MainViewModel();
           }
           private void btnMore_Click(object sender, RoutedEventArgs e)
