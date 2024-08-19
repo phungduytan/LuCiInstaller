@@ -1,0 +1,10 @@
+{
+  "installed": {
+    "client_id": "999010503673-kr2mulc0o8fn5rpeg1j2o182p78hajm1.apps.googleusercontent.com",
+    "project_id": "luciinstaller",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "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",
+    "redirect_uris": [ "http://localhost" ]
+  }}
