@@ -63,6 +63,7 @@ public class MainViewModel : ObservableObject
      {
           GetCloudVersion();
      }
+
      private async void GetCloudVersion()
      {
           var test = new LuCiVersionFactory();
