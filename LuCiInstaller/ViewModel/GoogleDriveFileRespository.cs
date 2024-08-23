@@ -3,6 +3,7 @@ using System.IO;
 using Google.Apis.Drive.v3;
 using Google.Apis.Util.Store;
 using Google.Apis.Services;
+using System.Windows;
 namespace LuCiInstaller.ViewModel;
 public class GoogleDriveFileRespository
 {
@@ -40,13 +41,13 @@ public class GoogleDriveFileRespository
                switch (progress.Status)
                {
                     case Google.Apis.Download.DownloadStatus.Downloading:
-                         Console.WriteLine(progress.BytesDownloaded);
+                         MessageBox.Show(progress.BytesDownloaded.ToString());
                          break;
                     case Google.Apis.Download.DownloadStatus.Completed:
-                         Console.WriteLine("Download complete.");
+                         MessageBox.Show("Download complete.");
                          break;
                     case Google.Apis.Download.DownloadStatus.Failed:
-                         Console.WriteLine("Download failed.");
+                         MessageBox.Show("Download failed.");
                          break;
                }
           };

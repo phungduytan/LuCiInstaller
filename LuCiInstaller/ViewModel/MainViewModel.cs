@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using LuCiInstaller.VersionExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace LuCiInstaller.ViewModel;
@@ -61,8 +63,9 @@ public class MainViewModel : ObservableObject
      {
           GetCloudVersion();
      }
-     private void GetCloudVersion()
+     private async void GetCloudVersion()
      {
-          GoogleDriveFileRespository lol = new GoogleDriveFileRespository();
+          var test = new LuCiVersionFactory();
+         var gitHubReleases = await test.GetListVersion("phungduytan", "LuCiInstaller");
      }
 }
