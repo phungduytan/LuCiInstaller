@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using LuCiInstaller.VersionExtensions;
 using System;
 using System.Collections.Generic;
@@ -25,8 +26,8 @@ public class MainViewModel : ObservableObject
                OnPropertyChanged();
           }
      }
-     private string currentVersion;
-     public string CurrentVersion
+     private LuCiVersion currentVersion;
+     public LuCiVersion CurrentVersion
      {
           get { return currentVersion; }
           set
@@ -35,18 +36,8 @@ public class MainViewModel : ObservableObject
                OnPropertyChanged();
           }
      }
-     private string discription;
-     public string Discription
-     {
-          get { return discription; }
-          set
-          {
-               discription = value;
-               OnPropertyChanged();
-          }
-     }
-     private string cloudVersion;
-     public string CloudVersion
+     private LuCiVersion cloudVersion;
+     public LuCiVersion CloudVersion
      {
           get { return cloudVersion; }
           set { cloudVersion = value;
@@ -61,12 +52,17 @@ public class MainViewModel : ObservableObject
      }
      public MainViewModel()
      {
+          CheckUpdateCommand = new RelayCommand(CheckUpdate);
+     }
+     private void CheckUpdate()
+     {
           GetCloudVersion();
      }
-
      private async void GetCloudVersion()
      {
           var test = new LuCiVersionFactory();
-         var gitHubReleases = await test.GetListVersion("phungduytan", "LuCiInstaller");
+          var gitHubReleases = await test.GetListVersion("phungduytan", "LuCiInstaller");
+          CloudVersion = gitHubReleases.First();
+          Notification = CloudVersion.Version;
      }
 }

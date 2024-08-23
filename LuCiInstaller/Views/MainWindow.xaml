@@ -38,11 +38,11 @@
                         </StackPanel>
                         <StackPanel x:Name="Infor">
                             <Label Content="{Binding CurrentVersion}"></Label>
-                            <Label Content="{Binding Discription}"></Label>
+                            <Label Content="{Binding CurrentVersion.Discreption}"></Label>
                         </StackPanel>
                     </StackPanel>
                     <StackPanel Grid.Column="1">
-                        <Button Content="Chec kUpdate" Height="30" Margin="10 5 10 5"></Button>
+                        <Button Content="Chec kUpdate" Height="30" Margin="10 5 10 5" Command="{Binding CheckUpdateCommand}"></Button>
                         <Button x:Name="btnMore" Content="More" Height="30" Margin="10 5 10 5" Click="btnMore_Click">
                             <Button.ContextMenu>
                                 <ContextMenu Name="menuMore">
@@ -52,7 +52,6 @@
                                 </ContextMenu>
                             </Button.ContextMenu>
                         </Button>
-                       
                     </StackPanel>
                 </Grid>
             </Border>
