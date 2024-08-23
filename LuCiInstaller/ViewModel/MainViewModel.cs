@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace LuCiInstaller.ViewModel;
@@ -50,9 +51,17 @@ public class MainViewModel : ObservableObject
           get { return notification; }
           set { notification = value; OnPropertyChanged(); }
      }
-     public MainViewModel()
+     private LuCiVersionFactory versionFac;
+     public LuCiVersionFactory VersionFac
+     {
+          get { return versionFac; }
+          set { versionFac = value; OnPropertyChanged(); }
+     }
+     ProgressBar progressBar;
+     public MainViewModel( ProgressBar progressBar)
      {
           CheckUpdateCommand = new RelayCommand(CheckUpdate);
+          this.progressBar = progressBar;
      }
      private void CheckUpdate()
      {
@@ -60,9 +69,9 @@ public class MainViewModel : ObservableObject
      }
      private async void GetCloudVersion()
      {
-          var test = new LuCiVersionFactory();
-          var gitHubReleases = await test.GetListVersion("phungduytan", "LuCiInstaller");
+          VersionFac = new LuCiVersionFactory();
+          var gitHubReleases = await VersionFac.GetListVersion("phungduytan", "LuCiInstaller");
           CloudVersion = gitHubReleases.First();
-          Notification = CloudVersion.Version;
+          VersionFac.DowloadFileOnGithub(CloudVersion, this.progressBar);
      }
 }
