@@ -33,13 +33,12 @@ public partial class MainViewModel : ObservableObject
           get { return currentVersion; }
           set { value = currentVersion; OnPropertyChanged(); }
      }
-<<<<<<< HEAD
      private string notyfication;
      public string Notyfication
      {
           get => notyfication;
           set { notyfication = value; OnPropertyChanged(); }
-=======
+     }
      private LuCiVersionFactory versionFac;
      public LuCiVersionFactory VersionFac
      {
@@ -47,26 +46,22 @@ public partial class MainViewModel : ObservableObject
           set { versionFac = value; OnPropertyChanged(); }
      }
      ProgressBar progressBar;
-     public MainViewModel( ProgressBar progressBar)
+     public MainViewModel(ProgressBar progressBar)
      {
-          CheckUpdateCommand = new RelayCommand(CheckUpdate);
-          this.progressBar = progressBar;
->>>>>>> f1cc83bc4dd30bebf62eb04f17d5d3920c57e66a
      }
 
      //public ICommand WindDowLoadCommand { get; set; }
      public ICommand InstallCommad { get; set; }
      public Page CurrentPage { get; set; }
-     public  MainViewModel()
+     public MainViewModel()
      {
-         
+
           WindDowLoad();
-         
+
      }
      [RelayCommand]
      private async void WindDowLoad()
      {
-<<<<<<< HEAD
           this.currentVersion = LuCiVersion.ReadCurrentVersion();
           var lol = GetLastVersion();
           this.cloudVersion = await lol;
@@ -88,13 +83,6 @@ public partial class MainViewModel : ObservableObject
                     //Show page để có thể repair hoặc uninstall
                }
           }
-         
-=======
-          VersionFac = new LuCiVersionFactory();
-          var gitHubReleases = await VersionFac.GetListVersion("phungduytan", "LuCiInstaller");
-          CloudVersion = gitHubReleases.First();
-          VersionFac.DowloadFileOnGithub(CloudVersion, this.progressBar);
->>>>>>> f1cc83bc4dd30bebf62eb04f17d5d3920c57e66a
      }
      static async Task<LuCiVersion> GetLastVersion()
      {
@@ -116,6 +104,6 @@ public partial class MainViewModel : ObservableObject
           }
           return luCiVersions.First();
      }
-    
+
 }
 

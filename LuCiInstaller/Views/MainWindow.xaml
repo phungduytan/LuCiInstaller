@@ -26,51 +26,6 @@
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-<<<<<<< HEAD
-            <Border Grid.Row="0" Background="#F5f5f5f5">
-                <Label Content="{Binding Notyfication,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></Label>
-=======
-            <Border Grid.Row="0" Background="#F5f5f5f5" >
-                <StackPanel >
-                    <Label Content="{Binding VersionFac.Notification}"></Label>
-                    <ProgressBar x:Name="pgBar" Height="5" Visibility="Hidden"></ProgressBar>
-                </StackPanel>
-              
-            </Border>
-            <Border Grid.Row="1" Background="LightGray" Margin="0 10 0 0">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="200"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/Img/LogoTest.png" Height="50"></Image>
-                            <Label FontSize="26" FontWeight="Bold" Content="{Binding NameProject}"></Label>
-                        </StackPanel>
-                        <StackPanel x:Name="Download" Visibility="Hidden">
-                            
-                        </StackPanel>
-                        <StackPanel x:Name="Infor">
-                            <Label Content="{Binding CurrentVersion}"></Label>
-                            <Label Content="{Binding CurrentVersion.Discreption}"></Label>
-                        </StackPanel>
-                    </StackPanel>
-                    <StackPanel Grid.Column="1">
-                        <Button Content="Chec kUpdate" Height="30" Margin="10 5 10 5" Command="{Binding CheckUpdateCommand}"></Button>
-                        <Button x:Name="btnMore" Content="More" Height="30" Margin="10 5 10 5" Click="btnMore_Click">
-                            <Button.ContextMenu>
-                                <ContextMenu Name="menuMore">
-                                    <MenuItem Header="Repair" Command="{Binding RepairCommand}"/>
-                                    <MenuItem Header="Install" Command="{Binding InstallCommand}"/>
-                                    <MenuItem Header="UnInstall" Command="{Binding UnInstallCommand}"/>
-                                </ContextMenu>
-                            </Button.ContextMenu>
-                        </Button>
-                    </StackPanel>
-                </Grid>
->>>>>>> f1cc83bc4dd30bebf62eb04f17d5d3920c57e66a
-            </Border>
             <Grid Grid.Column="1" Grid.Row="1" Background="White" Margin="5">
                 <ContentControl Content="{Binding CurrentPage}"/>
             </Grid>

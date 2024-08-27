@@ -39,7 +39,7 @@ namespace LuCiInstaller.Views
                {
                }
 
-               DataContext = new MainViewModel(pgBar);
+               DataContext = new MainViewModel();
           }
     }
 }
