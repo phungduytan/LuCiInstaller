@@ -33,11 +33,25 @@ public partial class MainViewModel : ObservableObject
           get { return currentVersion; }
           set { value = currentVersion; OnPropertyChanged(); }
      }
+<<<<<<< HEAD
      private string notyfication;
      public string Notyfication
      {
           get => notyfication;
           set { notyfication = value; OnPropertyChanged(); }
+=======
+     private LuCiVersionFactory versionFac;
+     public LuCiVersionFactory VersionFac
+     {
+          get { return versionFac; }
+          set { versionFac = value; OnPropertyChanged(); }
+     }
+     ProgressBar progressBar;
+     public MainViewModel( ProgressBar progressBar)
+     {
+          CheckUpdateCommand = new RelayCommand(CheckUpdate);
+          this.progressBar = progressBar;
+>>>>>>> f1cc83bc4dd30bebf62eb04f17d5d3920c57e66a
      }
 
      //public ICommand WindDowLoadCommand { get; set; }
@@ -52,6 +66,7 @@ public partial class MainViewModel : ObservableObject
      [RelayCommand]
      private async void WindDowLoad()
      {
+<<<<<<< HEAD
           this.currentVersion = LuCiVersion.ReadCurrentVersion();
           var lol = GetLastVersion();
           this.cloudVersion = await lol;
@@ -74,6 +89,12 @@ public partial class MainViewModel : ObservableObject
                }
           }
          
+=======
+          VersionFac = new LuCiVersionFactory();
+          var gitHubReleases = await VersionFac.GetListVersion("phungduytan", "LuCiInstaller");
+          CloudVersion = gitHubReleases.First();
+          VersionFac.DowloadFileOnGithub(CloudVersion, this.progressBar);
+>>>>>>> f1cc83bc4dd30bebf62eb04f17d5d3920c57e66a
      }
      static async Task<LuCiVersion> GetLastVersion()
      {

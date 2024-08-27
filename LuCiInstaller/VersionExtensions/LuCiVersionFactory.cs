@@ -9,12 +9,21 @@ using System.Windows;
 using System.Windows.Controls;
 
 namespace LuCiInstaller.VersionExtensions;
+<<<<<<< HEAD
 public class LuCiVersionFactory : ObservableObject
 {
      public List<LuCiVersion> LuCiVersions { get; set; }
      private string notification;
      public string Notification
      {
+=======
+public class LuCiVersionFactory: ObservableObject
+{
+     public List<LuCiVersion> LuCiVersions { get; set; }
+
+     private string notification;
+     public string Notification {
+>>>>>>> f1cc83bc4dd30bebf62eb04f17d5d3920c57e66a
           get { return notification; }
           set { notification = value; OnPropertyChanged(); }
      }
@@ -22,8 +31,12 @@ public class LuCiVersionFactory : ObservableObject
      private int downloadSpeedLimit = 1024 * 20000;
      private string downloadPath = @"C:\ProgramData\Autodesk\ApplicationPlugins\LuCi.RevitAutomation.bundle.rar";
      private string extractPath = @"C:\ProgramData\Autodesk\ApplicationPlugins";
+<<<<<<< HEAD
 
      public async Task<IEnumerable<LuCiVersion>> GetListVersion(string Owner, string Repo)
+=======
+     public async Task<List<LuCiVersion>> GetListVersion(string Owner, string Repo)
+>>>>>>> f1cc83bc4dd30bebf62eb04f17d5d3920c57e66a
      {
           LuCiVersions = new List<LuCiVersion>();
           string url = $"https://api.github.com/repos/{Owner}/{Repo}/releases";
@@ -100,6 +113,39 @@ public class LuCiVersionFactory : ObservableObject
           }
 
           Notification = "Cài đặt thành công";
+<<<<<<< HEAD
+=======
+     }
+     private async Task ExtractArchiveAsync(string archivePath, string extractPath, CancellationToken cancellationToken, ProgressBar progressBar)
+     {
+          using (var archive = ArchiveFactory.Open(archivePath))
+          {
+               int totalEntries = archive.Entries.Count();
+               int entriesProcessed = 0;
+
+               foreach (var entry in archive.Entries)
+               {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    if (!entry.IsDirectory)
+                    {
+                         entry.WriteToDirectory(extractPath, new ExtractionOptions()
+                         {
+                              ExtractFullPath = true,
+                              Overwrite = true
+                         });
+
+                         entriesProcessed++;
+
+                         // Hiển thị tiến trình giải nén
+                         progressBar.Value = (double)entriesProcessed / totalEntries * 100;
+                         double progress = (double)entriesProcessed / totalEntries * 100;
+                         Notification = $"Giải nén: {entriesProcessed}/{totalEntries} ({progress:F2}%)";
+                    }
+                    await Task.Delay(100, cancellationToken);
+               }
+
+          }
+>>>>>>> f1cc83bc4dd30bebf62eb04f17d5d3920c57e66a
      }
      private async Task ExtractArchiveAsync(string archivePath, string extractPath, CancellationToken cancellationToken, ProgressBar progressBar)
      {
