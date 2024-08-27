@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LuCiInstaller.ViewModel.PageViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,14 +16,15 @@ using System.Windows.Shapes;
 
 namespace LuCiInstaller.Views.pages
 {
-     /// <summary>
-     /// Interaction logic for DowloadPage.xaml
-     /// </summary>
-     public partial class DowloadPage : Page
-     {
-          public DowloadPage()
-          {
-               InitializeComponent();
-          }
-     }
+    /// <summary>
+    /// Interaction logic for DownloadAndInstallPage.xaml
+    /// </summary>
+    public partial class DownloadAndInstallPage : Page
+    {
+        public DownloadAndInstallPage()
+        {
+            InitializeComponent();
+            DataContext = new   DowloadViewModel();
+        }
+    }
 }

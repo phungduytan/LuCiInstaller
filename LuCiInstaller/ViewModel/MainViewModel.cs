@@ -14,11 +14,18 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Media3D;
 
 namespace LuCiInstaller.ViewModel;
 
 public partial class MainViewModel : ObservableObject
 {
+     private bool isLoading;
+     public bool IsLoading
+     {
+          get => isLoading;
+          set { isLoading = value; OnPropertyChanged(); }
+     }
 
      private LuCiVersion cloudVersion;
      public LuCiVersion CloudVersion
@@ -39,71 +46,65 @@ public partial class MainViewModel : ObservableObject
           get => notyfication;
           set { notyfication = value; OnPropertyChanged(); }
      }
-     private LuCiVersionFactory versionFac;
-     public LuCiVersionFactory VersionFac
+     private LuCiVersionFactory versionFactory;
+     public LuCiVersionFactory VersionFactory
      {
-          get { return versionFac; }
-          set { versionFac = value; OnPropertyChanged(); }
+          get => versionFactory;
+          set { versionFactory = value; OnPropertyChanged(); }
      }
-     ProgressBar progressBar;
-     public MainViewModel(ProgressBar progressBar)
+     private Page currentPage;
+     public Page CurrentPage
      {
+          get { return currentPage; }
+          set { currentPage = value; OnPropertyChanged(); }
      }
-
-     //public ICommand WindDowLoadCommand { get; set; }
-     public ICommand InstallCommad { get; set; }
-     public Page CurrentPage { get; set; }
      public MainViewModel()
      {
 
-          WindDowLoad();
-
+         
      }
      [RelayCommand]
-     private async void WindDowLoad()
+     private async void WindDowsLoad()
      {
-          this.currentVersion = LuCiVersion.ReadCurrentVersion();
-          var lol = GetLastVersion();
-          this.cloudVersion = await lol;
-          if (currentVersion == null)
+          try
           {
-               this.notyfication = "Không tìm thấy phiên bản đã cài đặt!";
-               //Show page cài đặt khi chưa có phiên bản nào đã cài đặt
-          }
-          else
-          {
-               if (currentVersion.IsOldVersion(cloudVersion))
+               IsLoading = true;
+               this.currentVersion = new LuCiVersion(  LuCiVersion.ReadCurrentVersion().Version, LuCiVersion.ReadCurrentVersion().Discreption, LuCiVersion.ReadCurrentVersion().TimeUpdate);
+               VersionFactory = new LuCiVersionFactory();
+               this.CloudVersion = await VersionFactory.GetLastVersion();
+
+               if (CurrentVersion == null)
                {
-                    this.notyfication = "Phiên bản hiện tại đã cũ";
-                    //Show page thể hiện phiên bản đã cũ
+                    this.Notyfication = "Không tìm thấy phiên bản đã cài đặt!";
+                    //Show page cài đặt khi chưa có phiên bản nào đã cài đặt
+                    CurrentPage = new InstallPage(CloudVersion, VersionFactory);
                }
                else
                {
-                    this.notyfication = "Phiên bản cài đặt là phiên bản mới nhất";
-                    //Show page để có thể repair hoặc uninstall
+                    if (currentVersion.IsOldVersion(cloudVersion))
+                    {
+                         this.Notyfication = "Phiên bản hiện tại đã cũ";
+                         //Show page thể hiện phiên bản đã cũ
+                         CurrentPage = new UpdateAvailablePage();
+                    }
+                    else
+                    {
+                         this.Notyfication = "Phiên bản cài đặt là phiên bản mới nhất";
+                         //Show page để có thể repair hoặc uninstall
+                         CurrentPage = new UpdatedPage(this.CurrentVersion);
+                    }
                }
           }
-     }
-     static async Task<LuCiVersion> GetLastVersion()
-     {
-          List<LuCiVersion> luCiVersions = new List<LuCiVersion>();
-          HttpClient client = new HttpClient();
-          string url = $"https://api.github.com/repos/phungduytan/LuCiInstaller/releases";
-          client.DefaultRequestHeaders.Add("User-Agent", "CSharpApp");
-          HttpResponseMessage response = await client.GetAsync(url);
-          //response.EnsureSuccessStatusCode();
-          string responseBody = await response.Content.ReadAsStringAsync();
-          JArray releases = JArray.Parse(responseBody);
-          foreach (var release in releases)
+          catch (Exception e)
           {
 
-               string versionName = release["name"]!.ToString();
-               string discription = release["body"]!.ToString();
-               string timeUpdate = release["published_at"]!.ToString();
-               luCiVersions.Add(new LuCiVersion(versionName, discription, timeUpdate));
+               Notyfication = $"Lỗi {e.Message}";
           }
-          return luCiVersions.First();
+          finally {
+               IsLoading = false;
+          }
      }
 
+     
 }
 

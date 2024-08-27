@@ -24,6 +24,7 @@ namespace LuCiInstaller.Views.pages
           public UpdateAvailablePage()
           {
                InitializeComponent();
+               DataContext = new  UpdateAvailableViewModel();
             
           }
           private void btnMore_Click(object sender, RoutedEventArgs e)

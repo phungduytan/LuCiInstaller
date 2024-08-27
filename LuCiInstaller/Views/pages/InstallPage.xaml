@@ -1,0 +1,41 @@
+﻿<Page x:Class="LuCiInstaller.Views.pages.InstallPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:LuCiInstaller.Views.pages"
+      mc:Ignorable="d" 
+      Title="InstallPage"
+      xmlns:converters="clr-namespace:LuCiInstaller.Converters">
+    <Page.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+    </Page.Resources>
+    <Grid>
+        <Border Grid.Row="1" Background="LightGray" Margin="0 10 0 0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Visibility="{Binding IsDownloading, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Img/LogoTest.png" Height="50"></Image>
+                        <Label FontSize="26" FontWeight="Bold" Content="{Binding NameProject}"></Label>
+                    </StackPanel>
+                    <StackPanel x:Name="Infor">
+                        <Label Content="{Binding CloudVersion.Version, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></Label>
+                        <Label Content="{Binding CloudVersion.Discreption, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></Label>
+                        <Label Content="{Binding CloudVersion.TimeUpdate,UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></Label>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Visibility="{Binding IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Frame Content="{Binding DownloadPage}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <Button Content="Install" Height="30" Margin="10 5 10 5" Command="{Binding InstallCommand}"></Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

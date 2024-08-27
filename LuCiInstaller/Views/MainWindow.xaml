@@ -6,13 +6,19 @@
         xmlns:local="clr-namespace:LuCiInstaller"
         xmlns:i="clr-namespace:Microsoft.Xaml.Behaviors;assembly=Microsoft.Xaml.Behaviors"
         mc:Ignorable="d"
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen"
+        xmlns:converters="clr-namespace:LuCiInstaller.Converters"
         >
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding WindDowLoadCommand}" CommandParameter="{Binding ElementName=MainContentFrame}"/>
+            <i:InvokeCommandAction Command="{Binding WindDowsLoadCommand}" CommandParameter="{Binding ElementName=MainContentFrame}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
+    <Window.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
@@ -21,13 +27,26 @@
         <Border Background="Transparent" BorderThickness="1" BorderBrush="Black">
             <Label  Margin="20 0 20 0" FontSize="36" FontWeight="Bold" >LuCi Tool Installer</Label>
         </Border>
-        <Grid Grid.Row="1" Margin="20">
+        <Grid Grid.Row="1"
+            Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <metro:ProgressRing  IsActive="True" Height="30" HorizontalAlignment="Left" Margin="10"/>
+                <TextBlock  Text=" Loading" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            </StackPanel>
+           
+        </Grid>
+        <Grid Grid.Row="1" Margin="20"
+               Visibility="{Binding IsLoading, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
+                <RowDefinition Height="30"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Horizontal"
+                 >
+                <TextBlock HorizontalAlignment="Center" FontSize="16"  Text="{Binding Notyfication, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></TextBlock>
+            </StackPanel>
             <Grid Grid.Column="1" Grid.Row="1" Background="White" Margin="5">
-                <ContentControl Content="{Binding CurrentPage}"/>
+                <Frame Content="{Binding CurrentPage}"/>
             </Grid>
         </Grid>
     </Grid>

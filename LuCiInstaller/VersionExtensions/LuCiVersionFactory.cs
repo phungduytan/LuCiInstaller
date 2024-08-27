@@ -12,7 +12,7 @@ namespace LuCiInstaller.VersionExtensions;
 public class LuCiVersionFactory : ObservableObject
 { 
      public List<LuCiVersion> LuCiVersions { get; set; }
-
+     public LuCiVersion LastVersion { get; set; }
      private string notification;
      public string Notification {
           get { return notification; }
@@ -40,9 +40,31 @@ public class LuCiVersionFactory : ObservableObject
           }
           return LuCiVersions;
      }
-     public async void DowloadFileOnGithub(LuCiVersion luCiVersion, ProgressBar progressBar)
+     public async Task<LuCiVersion> GetLastVersion()
      {
-          progressBar.Visibility = Visibility.Visible;
+          LuCiVersions = new List<LuCiVersion>();
+          HttpClient client = new HttpClient();
+          string url = $"https://api.github.com/repos/phungduytan/LuCiInstaller/releases";
+          client.DefaultRequestHeaders.Add("User-Agent", "CSharpApp");
+          HttpResponseMessage response = await client.GetAsync(url);
+          response.EnsureSuccessStatusCode();
+          string responseBody = await response.Content.ReadAsStringAsync();
+          JArray releases = JArray.Parse(responseBody);
+          foreach (var release in releases)
+          {
+
+               string versionName = release["name"]!.ToString();
+               string discription = release["body"]!.ToString();
+               string timeUpdate = release["published_at"]!.ToString();
+               LuCiVersions.Add(new LuCiVersion(versionName, discription, timeUpdate));
+          }
+          LastVersion = LuCiVersions.ElementAt(1);
+          await Task.Delay(2000);
+          return LuCiVersions.ElementAt(1);
+     }
+     public async Task DowloadFileOnGithub(LuCiVersion luCiVersion, ProgressBar progressBarDowload, ProgressBar progressBarExt)
+     {
+          progressBarDowload.Visibility = Visibility.Visible;
           string fileUrl = $"https://github.com/phungduytan/LuCiInstaller/releases/download/{luCiVersion.Version}/LuCi.RevitAutomation.bundle.rar";
           using (HttpClient client = new HttpClient())
           using (HttpResponseMessage response = await client.GetAsync(fileUrl, HttpCompletionOption.ResponseHeadersRead))
@@ -53,7 +75,7 @@ public class LuCiVersionFactory : ObservableObject
                var totalBytesRead = 0L;
                var buffer = new byte[8192];
                int bytesRead;
-               progressBar.Maximum = 100;
+               progressBarDowload.Maximum = 100;
 
                do
                {
@@ -66,8 +88,8 @@ public class LuCiVersionFactory : ObservableObject
                          // Hiển thị tiến trình
                          if (totalBytes != -1)
                          {
-                              progressBar.Value = (double)totalBytesRead / totalBytes * 100;
-                              Notification = $"Đang tải về: {totalBytesRead} / {totalBytes} bytes ({progressBar.Value:F2}%)";
+                              progressBarDowload.Value = (double)totalBytesRead / totalBytes * 100;
+                              Notification = $"Đang tải về: {totalBytesRead} / {totalBytes} bytes ({progressBarDowload.Value:F2}%)";
                          }
                          else
                          {
@@ -83,13 +105,15 @@ public class LuCiVersionFactory : ObservableObject
                } while (bytesRead > 0);
           }
           Notification = "Tải về thành công";
-          progressBar.Value = 0;
+          progressBarExt.Value = 0;
+          progressBarExt.Visibility = Visibility.Visible;
+         
           TimeSpan extractionTimeLimit = TimeSpan.FromSeconds(1500);
           using (var cts = new CancellationTokenSource(extractionTimeLimit))
           {
                try
                {
-                    await ExtractArchiveAsync(downloadPath, extractPath, cts.Token, progressBar);
+                    await ExtractArchiveAsync(downloadPath, extractPath, cts.Token, progressBarExt);
                     Console.WriteLine("Giải nén hoàn tất!");
                }
                catch (OperationCanceledException)
@@ -125,7 +149,6 @@ public class LuCiVersionFactory : ObservableObject
                          double progress = (double)entriesProcessed / totalEntries * 100;
                          Notification = $"Giải nén: {entriesProcessed}/{totalEntries} ({progress:F2}%)";
                     }
-                    await Task.Delay(100, cancellationToken);
                }
 
           }
