@@ -1,8 +1,12 @@
-﻿namespace LuCiInstaller.VersionExtensions;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SharpCompress.Common;
+using System.IO;
 
-public class LuCiVersion
+namespace LuCiInstaller.VersionExtensions;
+
+public class LuCiVersion : ObservableObject
 {
-     public string Version { get; set; }
+     public string Version {  get; set; }
      public int VersionNumber1 { get; set; }
      public int VersionNumber2 { get; set; }
      public int VersionNumber3 { get; set; }
@@ -45,5 +49,37 @@ public class LuCiVersion
                }
           }
           return a;
+     }
+     public void WiteToCurrentVersion()
+     {
+          string filePath = @"C:\ProgramData\Autodesk\ApplicationPlugins\LuCi.RevitAutomation.bundle\Verion.txt";
+          using (StreamWriter writer = new StreamWriter(filePath, false))
+          {
+               writer.WriteLine(Version);
+               writer.WriteLine(Discreption);
+               writer.WriteLine(TimeUpdate);
+               writer.Close();
+          }
+     }
+     public static LuCiVersion ReadCurrentVersion()
+     {
+          string filePath = @"C:\ProgramData\Autodesk\ApplicationPlugins\LuCi.RevitAutomation.bundle\Verion.txt";
+          string version = null;
+          string discreption = null;
+          string timeUpdate = null;
+          if (File.Exists(filePath))
+          {
+               using (StreamReader reader = new StreamReader(filePath))
+               {
+                    version = reader.ReadLine();
+                    discreption = reader.ReadLine();
+                    timeUpdate = reader.ReadLine();
+               }
+          }
+          else
+          {
+               return null;
+          }
+          return new LuCiVersion(version!, discreption!, timeUpdate!);
      }
 }

@@ -4,8 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LuCiInstaller"
+        xmlns:i="clr-namespace:Microsoft.Xaml.Behaviors;assembly=Microsoft.Xaml.Behaviors"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen"
+        >
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding WindDowLoadCommand}" CommandParameter="{Binding ElementName=MainContentFrame}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
@@ -20,41 +27,11 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Border Grid.Row="0" Background="#F5f5f5f5">
-                <Label Content="{Binding Notification}"></Label>
+                <Label Content="{Binding Notyfication,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></Label>
             </Border>
-            <Border Grid.Row="1" Background="LightGray" Margin="0 10 0 0">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="200"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/Img/LogoTest.png" Height="50"></Image>
-                            <Label FontSize="26" FontWeight="Bold" Content="{Binding NameProject}"></Label>
-                        </StackPanel>
-                        <StackPanel x:Name="Download" Visibility="Hidden">
-                            
-                        </StackPanel>
-                        <StackPanel x:Name="Infor">
-                            <Label Content="{Binding CurrentVersion}"></Label>
-                            <Label Content="{Binding CurrentVersion.Discreption}"></Label>
-                        </StackPanel>
-                    </StackPanel>
-                    <StackPanel Grid.Column="1">
-                        <Button Content="Chec kUpdate" Height="30" Margin="10 5 10 5" Command="{Binding CheckUpdateCommand}"></Button>
-                        <Button x:Name="btnMore" Content="More" Height="30" Margin="10 5 10 5" Click="btnMore_Click">
-                            <Button.ContextMenu>
-                                <ContextMenu Name="menuMore">
-                                    <MenuItem Header="Repair" Command="{Binding RepairCommand}"/>
-                                    <MenuItem Header="Install" Command="{Binding InstallCommand}"/>
-                                    <MenuItem Header="UnInstall" Command="{Binding UnInstallCommand}"/>
-                                </ContextMenu>
-                            </Button.ContextMenu>
-                        </Button>
-                    </StackPanel>
-                </Grid>
-            </Border>
+            <Grid Grid.Column="1" Grid.Row="1" Background="White" Margin="5">
+                <ContentControl Content="{Binding CurrentPage}"/>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

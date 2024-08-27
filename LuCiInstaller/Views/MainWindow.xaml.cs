@@ -41,14 +41,5 @@ namespace LuCiInstaller.Views
 
                DataContext = new MainViewModel();
           }
-          private void btnMore_Click(object sender, RoutedEventArgs e)
-          {
-               ContextMenu contextMenu = btnMore.ContextMenu;
-               contextMenu.PlacementTarget = btnMore;
-               contextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom; // Hiển thị dưới nút
-               contextMenu.HorizontalOffset = 0; // Điều chỉnh vị trí theo chiều ngang nếu cần
-               contextMenu.VerticalOffset = 5;
-               btnMore.ContextMenu.IsOpen = true;
-        }
     }
 }

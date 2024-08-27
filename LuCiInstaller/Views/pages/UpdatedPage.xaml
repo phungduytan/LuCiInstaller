@@ -1,0 +1,45 @@
+﻿<Page x:Class="LuCiInstaller.Views.pages.UpdatedPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:LuCiInstaller.Views.pages"
+      mc:Ignorable="d" 
+      Title="UpdatedPage">
+
+    <Grid>
+        <Border Grid.Row="1" Background="LightGray" Margin="0 10 0 0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Img/LogoTest.png" Height="50"></Image>
+                        <Label FontSize="26" FontWeight="Bold" Content="{Binding NameProject}"></Label>
+                    </StackPanel>
+                    <StackPanel x:Name="Download" Visibility="Hidden">
+
+                    </StackPanel>
+                    <StackPanel x:Name="Infor">
+                        <Label Content="{Binding CurrentVersion.Version, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></Label>
+                        <Label Content="{Binding CurrentVersion.Discreption, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></Label>
+                        <Label Content="{Binding CurrentVersion.TimeUpdate,UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></Label>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <Button Content="Chec kUpdate" Height="30" Margin="10 5 10 5" Command="{Binding CheckUpdateCommand}"></Button>
+                    <Button x:Name="btnMore" Content="More" Height="30" Margin="10 5 10 5" Click="btnMore_Click">
+                        <Button.ContextMenu>
+                            <ContextMenu Name="menuMore">
+                                <MenuItem Header="Repair" Command="{Binding RepairCommand}"/>
+                                <MenuItem Header="UnInstall" Command="{Binding UnInstallCommand}"/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

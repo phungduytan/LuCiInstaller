@@ -39,7 +39,8 @@
 	  <PackageReference Include="Google.Apis.Core" Version="1.68.0" />
 	  <PackageReference Include="Google.Apis.Drive.v3" Version="1.68.0.3498" />
 	  <PackageReference Include="Google.Apis.Oauth2.v2" Version="1.68.0.1869" />
-		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
+	<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
+	<PackageReference Include="SharpCompress" Version="0.37.2" />
 	</ItemGroup>
 
 	<ItemGroup>
