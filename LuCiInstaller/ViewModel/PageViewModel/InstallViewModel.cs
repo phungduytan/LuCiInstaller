@@ -1,12 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LuCiInstaller.VersionExtensions;
-using LuCiInstaller.Views.pages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace LuCiInstaller.ViewModel.PageViewModel;
@@ -15,7 +9,6 @@ public partial class InstallViewModel : ObservableObject
 {
      public LuCiVersion CloudVersion { get; set; }
      public LuCiVersionFactory LuCiVersionFactory { get; set; }
-     public DownloadAndInstallPage DownloadPage { get; set; }
 
      private ProgressBar _progressBar1;
      public ProgressBar ProgressBar1 {
@@ -36,14 +29,11 @@ public partial class InstallViewModel : ObservableObject
           set { isDownloading = value; OnPropertyChanged(); }
      
      }
-     public InstallViewModel(LuCiVersion cloudVersion, LuCiVersionFactory luCiVersionFactory ,DownloadAndInstallPage downloadAndInsstallPage)
+     public InstallViewModel(LuCiVersion cloudVersion, LuCiVersionFactory luCiVersionFactory )
      {
           IsDownloading = false;
           CloudVersion = cloudVersion;
           LuCiVersionFactory = luCiVersionFactory;
-          DownloadPage = downloadAndInsstallPage;
-          ProgressBar1 = downloadAndInsstallPage.bar1;
-          ProgressBar2 = downloadAndInsstallPage.bar2;
      }
      [RelayCommand]
 

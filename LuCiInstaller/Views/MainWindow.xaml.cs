@@ -21,25 +21,34 @@ namespace LuCiInstaller.Views
           public MainWindow()
           {
                InitializeComponent();
-               RegistryKey regkey = Registry.CurrentUser.CreateSubKey("Software\\LuCiInstall");
-               //mo registry khoi dong cung win
-               RegistryKey regstart = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run");
-               string keyvalue = "1";
-               //string subkey = "Software\\ManhQuyen";
-               try
-               {
-                    //chen gia tri key
-                    regkey.SetValue("Index", keyvalue);
-                    //regstart.SetValue("taoregistrytronghethong", "E:\\Studing\\Bai Tap\\CSharp\\Channel 4\\bai temp\\tao registry trong he thong\\tao registry trong he thong\\bin\\Debug\\tao registry trong he thong.exe");
-                    regstart.SetValue("LuCiInstall", Application.Current + "\\LuCiInstaller.exe");
-                    ////dong tien trinh ghi key
-                    //regkey.Close();
-               }
-               catch (System.Exception ex)
-               {
-               }
+               //RegistryKey regkey = Registry.CurrentUser.CreateSubKey("Software\\LuCiInstall");
+               ////mo registry khoi dong cung win
+               //RegistryKey regstart = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run");
+               //string keyvalue = "1";
+               ////string subkey = "Software\\ManhQuyen";
+               //try
+               //{
+               //     //chen gia tri key
+               //     regkey.SetValue("Index", keyvalue);
+               //     //regstart.SetValue("taoregistrytronghethong", "E:\\Studing\\Bai Tap\\CSharp\\Channel 4\\bai temp\\tao registry trong he thong\\tao registry trong he thong\\bin\\Debug\\tao registry trong he thong.exe");
+               //     regstart.SetValue("LuCiInstall", Application.Current + "\\LuCiInstaller.exe");
+               //     ////dong tien trinh ghi key
+               //     //regkey.Close();
+               //}
+               //catch (System.Exception ex)
+               //{
+               //}
 
-               DataContext = new MainViewModel();
+               DataContext = new MainViewModel(bar1,bar2,bar0);
           }
-    }
+          private void btnMore_Click(object sender, RoutedEventArgs e)
+          {
+               ContextMenu contextMenu = btnMore.ContextMenu;
+               contextMenu.PlacementTarget = btnMore;
+               contextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom; // Hiển thị dưới nút
+               contextMenu.HorizontalOffset = 0; // Điều chỉnh vị trí theo chiều ngang nếu cần
+               contextMenu.VerticalOffset = 5;
+               btnMore.ContextMenu.IsOpen = true;
+          }
+     }
 }
