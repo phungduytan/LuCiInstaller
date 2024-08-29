@@ -9,7 +9,9 @@
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         Title="MainWindow" Height="auto" Width="auto" WindowStartupLocation="CenterScreen"
         Foreground="White"
+         x:Name="main"
         Background="#242424"
+       
         >
     
     <i:Interaction.Triggers>
@@ -87,7 +89,7 @@
                     <StackPanel Visibility="{Binding InverseIsDownloading}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="/Img/LogoTest.png" Height="50"></Image>
-                            <Label FontSize="26" FontWeight="Bold" Content="LuCi Automation for Revit"></Label>
+                            <Label FontSize="26" FontWeight="Bold" Content="Automation for Revit"></Label>
                         </StackPanel>
                         <StackPanel x:Name="InforCurrentVersion" Margin="60 0 0 0">
                             <Label Content="Current Version" FontWeight="Bold" Visibility="{Binding InverseIsCanInstall}"></Label>
@@ -148,7 +150,7 @@
                                         <Label Content="{Binding CloudVersion.TimeUpdate,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></Label>
                                     </StackPanel>
                                 </StackPanel>
-                                <Button Grid.Column="1" Content="Install" Height="25" Margin="10 3 10 3" Command="{Binding UpdateCommand}"></Button>
+                                <Button Grid.Column="1" Content="Install" Height="25" Margin="10 3 10 3" Command="{Binding UpdateCommand}" CommandParameter="{Binding ElementName=main}"></Button>
                             </Grid>
                         </StackPanel>
                     </StackPanel>

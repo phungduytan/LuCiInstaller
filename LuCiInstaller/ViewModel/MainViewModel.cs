@@ -7,11 +7,15 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace LuCiInstaller.ViewModel;
 
 public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
 {
+     private double _TimeToCheckUpdate = 10000;
+     private DispatcherTimer _Timer = new DispatcherTimer();
+
      private Visibility isRemove;
      public Visibility IsRemove
      {
@@ -121,8 +125,8 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
           get { return removeBarExtrac; }
           set { removeBarExtrac = value; OnPropertyChanged(); }
      }
-     
-          private ProgressBar progressBarRemove;
+
+     private ProgressBar progressBarRemove;
      public ProgressBar ProgressBarRemove
      {
           get { return progressBarRemove; }
@@ -134,11 +138,96 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
           progressBarRemove = progressBar0;
           ProgressBarDownload = progressBar1;
           ProgressBarExtrac = progressBar2;
-
           this.currentVersion = new LuCiVersion();
+          //CheckUpdate();
+       
+
+     }
+     private async Task CheckUpdate() {
+
+          await Task.Delay(30000);
+          while (true){
+
+               var hour = DateTime.Now.Hour;
+               var minute = DateTime.Now.Minute;
+               if (hour == 17 && minute == 21)
+               {
+                   
+                    WindDowsLoad();
+                    await Task.Delay(60000);
+               }
+               
+          }
      }
      [RelayCommand]
      public async void WindDowsLoad()
+     {
+          await CheckUpdateProcess();
+     }
+     [RelayCommand]
+     public async void UnInstall()
+     {
+          var revitProcesses = Process.GetProcessesByName("Revit");
+          if (revitProcesses.Count() != 0)
+          {
+               MessageBoxResult result = MessageBox.Show("Revit is currently running. Please close Revit to proceed with the Add-in installation", "Notifycation", MessageBoxButton.OK, MessageBoxImage.Question);
+               if (result == MessageBoxResult.OK)
+               {
+                    
+                    await WaitForRevitToClose();
+                   
+                    await UnInstallProcess();
+                 
+               }  
+          }
+          else
+          {
+               await WaitForRevitToClose();
+               await UnInstallProcess();
+          }
+     }
+     [RelayCommand]
+     public async void Update()
+     {
+          var revitProcesses = Process.GetProcessesByName("Revit");
+          if (revitProcesses.Count() != 0)
+          {
+               MessageBoxResult result = MessageBox.Show("Revit is currently running. Please close Revit to proceed with the Add-in installation", "Notifycation", MessageBoxButton.OK, MessageBoxImage.Question);
+
+               if (result == MessageBoxResult.OK)
+               {
+                    await WaitForRevitToClose();
+                    await UpdateProcess();
+               }
+          }
+          else
+          {
+               await WaitForRevitToClose();
+               await UpdateProcess();
+          }
+     }
+     [RelayCommand]
+     public async void Repair()
+     {
+          var revitProcesses = Process.GetProcessesByName("Revit");
+          if (revitProcesses.Count() != 0)
+          {
+               MessageBoxResult result = MessageBox.Show("Revit is currently running. Please close Revit to proceed with the Add-in installation", "Notifycation", MessageBoxButton.OK, MessageBoxImage.Question);
+
+               if (result == MessageBoxResult.OK)
+               {
+                    await WaitForRevitToClose();
+                    await RepairProcess();
+               }
+          }
+          else
+          {
+               await WaitForRevitToClose();
+               await UpdateProcess();
+          }
+     }
+
+     private async Task CheckUpdateProcess()
      {
           try
           {
@@ -194,9 +283,12 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
           }
      }
 
-     [RelayCommand]
-     public async void Update()
+     private async Task UpdateProcess()
      {
+          if (CheckUpdateProcess().Status == TaskStatus.Running)
+          {
+               await CheckUpdateProcess();
+          }
           Notyfication = "Installing...";
           try
           {
@@ -215,9 +307,40 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
                WindDowsLoad();
           }
      }
-     [RelayCommand]
-     public async void Repair()
+
+     private async Task UnInstallProcess()
      {
+          if (CheckUpdateProcess().Status == TaskStatus.Running)
+          {
+               await CheckUpdateProcess();
+          }
+          Notyfication = "Uninstalling...";
+          try
+          {
+               IsRemove = Visibility.Visible;
+               IsDownloading = Visibility.Collapsed;
+               InverseIsDownloading = Visibility.Collapsed;
+               LuCiVersion cloudCurrentVersion = VersionFactory.LuCiVersions.Where(p => p.Version.Equals(CurrentVersion.Version)).First();
+               await this.VersionFactory.RemoveFileAsync(ProgressBarRemove);
+               cloudCurrentVersion.WiteToCurrentVersion();
+          }
+          catch (Exception e)
+          {
+
+               Notyfication = $"{e.Message}";
+          }
+          finally
+          {
+               WindDowsLoad();
+          }
+     }
+
+     private async Task RepairProcess()
+     {
+          if (CheckUpdateProcess().Status == TaskStatus.Running)
+          {
+               await CheckUpdateProcess();
+          }
           VersionFactory.DeleteDirectoryRecursively(versionFactory.installPath);
           Notyfication = "Repairing...";
           try
@@ -238,71 +361,25 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
                WindDowsLoad();
           }
      }
-     [RelayCommand]
-     public async void UnInstall()
+
+     private async Task WaitForRevitToClose()
      {
-          CheckRevitIsOpening();
-          Notyfication = "Uninstalling...";
-          try
+          bool revitRunning = true;
+          var app = Application.Current.MainWindow;
+          app.IsEnabled = false;
+          while (revitRunning)
           {
-               IsRemove = Visibility.Visible;
-               IsDownloading = Visibility.Collapsed;
-               InverseIsDownloading = Visibility.Collapsed;
-               LuCiVersion cloudCurrentVersion = VersionFactory.LuCiVersions.Where(p => p.Version.Equals(CurrentVersion.Version)).First();
-               await this.VersionFactory.RemoveFileAsync(  ProgressBarRemove);
-               cloudCurrentVersion.WiteToCurrentVersion();
-          }
-          catch (Exception e)
-          {
-
-               Notyfication = $"{e.Message}";
-          }
-          finally
-          {
-               WindDowsLoad();
-          }
-     }
-     private void CheckRevitIsOpening()
-     {
-          // Tìm tất cả các tiến trình có tên "Revit"
-          var revitProcesses = Process.GetProcessesByName("Revit");
-
-          if (revitProcesses.Length > 0)
-          {
-               // Hiển thị thông báo với các nút OK và Cancel
-               var result = MessageBox.Show("Revit is currently running. Would you like to close Revit to proceed?",
-                                            "Close Revit", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-
-               if (result == MessageBoxResult.OK)
+               var revitProcesses = Process.GetProcessesByName("Revit");
+               if (revitProcesses.Length == 0)
                {
-                    try
-                    {
-                         foreach (var process in revitProcesses)
-                         {
-                              process.Kill();
-                              process.WaitForExit(); // Đợi tiến trình đóng hoàn toàn
-                         }
-
-                         MessageBox.Show("Revit has been closed successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                         // Tiếp tục các tác vụ khác sau khi Revit đã đóng
-                         // ...
-                    }
-                    catch (Exception ex)
-                    {
-                         // Hiển thị lỗi nếu không thể đóng Revit
-                         MessageBox.Show("Failed to close Revit: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+                    revitRunning = false;
                }
-               else if (result == MessageBoxResult.Cancel)
+               else
                {
-                    Application.Current.Shutdown();
-                    Application.Current.Run();
+                    await Task.Delay(1000);
                }
-               
           }
-          
+          app.IsEnabled = true;
      }
-
-
 }
 
