@@ -1,7 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LuCiInstaller.VersionExtensions;
+using SharpCompress;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -155,7 +158,7 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
 
                if (CurrentVersion == null)
                {
-                    this.Notyfication = "Không tìm thấy phiên bản đã cài đặt!";
+                    this.Notyfication = "Application not found. Please install the app to proceed.";
                     //Show page cài đặt khi chưa có phiên bản nào đã cài đặt
                     IsCanUpdate = Visibility.Visible;
                     IsCanInstall = Visibility.Visible;
@@ -165,13 +168,13 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
                {
                     if (CurrentVersion.IsOldVersion(cloudVersion))
                     {
-                         this.Notyfication = "Phiên bản hiện tại đã cũ";
+                         this.Notyfication = "Update availble.";
                          IsCanUpdate = Visibility.Visible;
 
                     }
                     else
                     {
-                         this.Notyfication = "Phiên bản cài đặt là phiên bản mới nhất";
+                         this.Notyfication = "All installations are up to date.";
                          IsCanUpdate = Visibility.Collapsed;
 
                     }
@@ -180,7 +183,7 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
           catch (Exception e)
           {
 
-               Notyfication = $"Lỗi {e.Message}";
+               Notyfication = $"{e.Message}";
           }
           finally
           {
@@ -194,6 +197,7 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
      [RelayCommand]
      public async void Update()
      {
+          Notyfication = "Installing...";
           try
           {
                IsDownloading = Visibility.Visible;
@@ -204,7 +208,7 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
           catch (Exception e)
           {
 
-               Notyfication = $"Lỗi {e.Message}";
+               Notyfication = $"{e.Message}";
           }
           finally
           {
@@ -214,6 +218,8 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
      [RelayCommand]
      public async void Repair()
      {
+          VersionFactory.DeleteDirectoryRecursively(versionFactory.installPath);
+          Notyfication = "Repairing...";
           try
           {
                IsDownloading = Visibility.Visible;
@@ -225,7 +231,7 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
           catch (Exception e)
           {
 
-               Notyfication = $"Lỗi {e.Message}";
+               Notyfication = $"{e.Message}";
           }
           finally
           {
@@ -235,6 +241,8 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
      [RelayCommand]
      public async void UnInstall()
      {
+          CheckRevitIsOpening();
+          Notyfication = "Uninstalling...";
           try
           {
                IsRemove = Visibility.Visible;
@@ -247,12 +255,54 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
           catch (Exception e)
           {
 
-               Notyfication = $"Lỗi {e.Message}";
+               Notyfication = $"{e.Message}";
           }
           finally
           {
                WindDowsLoad();
           }
      }
+     private void CheckRevitIsOpening()
+     {
+          // Tìm tất cả các tiến trình có tên "Revit"
+          var revitProcesses = Process.GetProcessesByName("Revit");
+
+          if (revitProcesses.Length > 0)
+          {
+               // Hiển thị thông báo với các nút OK và Cancel
+               var result = MessageBox.Show("Revit is currently running. Would you like to close Revit to proceed?",
+                                            "Close Revit", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+
+               if (result == MessageBoxResult.OK)
+               {
+                    try
+                    {
+                         foreach (var process in revitProcesses)
+                         {
+                              process.Kill();
+                              process.WaitForExit(); // Đợi tiến trình đóng hoàn toàn
+                         }
+
+                         MessageBox.Show("Revit has been closed successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                         // Tiếp tục các tác vụ khác sau khi Revit đã đóng
+                         // ...
+                    }
+                    catch (Exception ex)
+                    {
+                         // Hiển thị lỗi nếu không thể đóng Revit
+                         MessageBox.Show("Failed to close Revit: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+               }
+               else if (result == MessageBoxResult.Cancel)
+               {
+                    Application.Current.Shutdown();
+                    Application.Current.Run();
+               }
+               
+          }
+          
+     }
+
+
 }
 

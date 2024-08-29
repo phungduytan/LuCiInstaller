@@ -38,7 +38,7 @@ public class LuCiVersionFactory : ObservableObject
      private int downloadSpeedLimit = 1024 * 5000;
      private string downloadPath = @"C:\ProgramData\Autodesk\ApplicationPlugins\LuCi.RevitAutomation.bundle.rar";
      private string extractPath = @"C:\ProgramData\Autodesk\ApplicationPlugins";
-     private string installPath = @"C:\ProgramData\Autodesk\ApplicationPlugins\LuCi.RevitAutomation.bundle";
+     public string installPath = @"C:\ProgramData\Autodesk\ApplicationPlugins\LuCi.RevitAutomation.bundle";
      public async Task<List<LuCiVersion>> GetListVersion(string Owner, string Repo)
      {
           LuCiVersions = new List<LuCiVersion>();
@@ -105,11 +105,11 @@ public class LuCiVersionFactory : ObservableObject
                          if (totalBytes != -1)
                          {
                               progressBarDowload.Value = (double)totalBytesRead / totalBytes * 100;
-                              DownloadNotify = $"{totalBytesRead/1024} / {totalBytes/1024} Kb ({progressBarDowload.Value:F2}%)";
+                              DownloadNotify = $"{totalBytesRead/1024} of {totalBytes/1024} Kb ({progressBarDowload.Value:F2}%)";
                          }
                          else
                          {
-                              DownloadNotify = $"{totalBytesRead} bytes";
+                              DownloadNotify = $"{totalBytesRead/1024} Kb";
                          }
 
                          // Giới hạn tốc độ tải
@@ -120,7 +120,7 @@ public class LuCiVersionFactory : ObservableObject
                     }
                } while (bytesRead > 0);
           }
-          DownloadNotify = "Hoàn thành";
+          DownloadNotify = "Done";
           progressBarExt.Value = 0;
           progressBarExt.Visibility = Visibility.Visible;
          
@@ -133,11 +133,11 @@ public class LuCiVersionFactory : ObservableObject
                }
                catch (OperationCanceledException)
                {
-                    Console.WriteLine("Giải nén bị hủy do vượt quá thời gian giới hạn.");
+                    Console.WriteLine("Time out");
                }
           }
 
-          ExtractNotify = "Hoàn thành";
+          ExtractNotify = "Done";
      }
      private async Task ExtractArchiveAsync(string archivePath, string extractPath, CancellationToken cancellationToken, ProgressBar progressBar)
      {
@@ -162,12 +162,13 @@ public class LuCiVersionFactory : ObservableObject
                          // Hiển thị tiến trình giải nén
                          progressBar.Value = (double)entriesProcessed / totalEntries * 100;
                          double progress = (double)entriesProcessed / totalEntries * 100;
-                         ExtractNotify = $"{entriesProcessed}/{totalEntries} ({progress:F2}%)";
+                         ExtractNotify = $"{entriesProcessed} of {totalEntries} ({progress:F2}%)";
                     }
                     await Task.Delay(50);
                }
 
           }
+          File.Delete(archivePath);
           await Task.Delay(1000);
      }
      public async Task RemoveFileAsync( ProgressBar progressBar)
@@ -191,12 +192,12 @@ public class LuCiVersionFactory : ObservableObject
                     {
                          currentItem++;
                          progressBar.Value = (double)currentItem / totalItems * 100;
-                         RemovetNotify = $"{currentItem}/{totalItems} " +$"({(int)progressBar.Value}%)" ;
+                         RemovetNotify = $"{currentItem} of {totalItems} ({(int)progressBar.Value}%)" ;
                           file.Delete();
                     }
                     catch (Exception ex)
                     {
-                         RemovetNotify = $"Lỗi khi xóa file {file.FullName}: {ex.Message}";
+                         RemovetNotify = $"Error {file.FullName}: {ex.Message}";
                     }
                     await Task.Delay(50);
                }
@@ -207,12 +208,12 @@ public class LuCiVersionFactory : ObservableObject
                     {
                          currentItem++;
                          progressBar.Value = (double)currentItem / totalItems * 100;
-                         RemovetNotify = $"{currentItem}/{totalItems}" + $"({ (int)progressBar.Value}%)";
+                         RemovetNotify = $"{currentItem} of {totalItems} ({ (int)progressBar.Value}%)";
                          subDirectory.Delete(true); 
                     }
                     catch (Exception ex)
                     {
-                         Console.WriteLine($"Lỗi khi xóa thư mục {ex.Message}");
+                         Console.WriteLine($"Error {ex.Message}");
                     }
                     await Task.Delay(50);
                }
@@ -230,8 +231,26 @@ public class LuCiVersionFactory : ObservableObject
                RemovetNotify = "0/0";
           }
 
-          RemovetNotify = "Hoàn tất";
+          RemovetNotify = "Done";
           await Task.Delay(1000);
-     }     
-     
+     }
+
+     public void DeleteDirectoryRecursively(string targetDir)
+     {
+          string[] files = Directory.GetFiles(targetDir);
+          string[] dirs = Directory.GetDirectories(targetDir);
+
+          foreach (string file in files)
+          {
+               File.SetAttributes(file, FileAttributes.Normal);
+               File.Delete(file);
+          }
+
+          foreach (string dir in dirs)
+          {
+               DeleteDirectoryRecursively(dir);
+          }
+
+          Directory.Delete(targetDir, false); // Finally, delete the empty directory
+     }
 }

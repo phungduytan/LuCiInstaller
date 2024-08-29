@@ -8,7 +8,10 @@
         mc:Ignorable="d"
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         Title="MainWindow" Height="auto" Width="auto" WindowStartupLocation="CenterScreen"
+        Foreground="White"
+        Background="#242424"
         >
+    
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding WindDowsLoadCommand}" CommandParameter="{Binding ElementName=MainContentFrame}"/>
@@ -16,13 +19,14 @@
     </i:Interaction.Triggers>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="80"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border Background="Transparent" 
-                BorderThickness="1" 
-                BorderBrush="Black">
-            <Label  Margin="20 0 20 0" 
+                BorderThickness="2" 
+                BorderBrush="#2e2e2e"
+                Margin="-10 0 -10 0" >
+            <Label  Margin="50 0 50 0" 
                     FontSize="30" 
                     FontWeight="Bold" 
                     VerticalContentAlignment="Center">Installer</Label>
@@ -40,25 +44,24 @@
                             VerticalAlignment="Center" />
             </StackPanel>
         </Grid>
-        <Grid Grid.Row="1" 
-              Margin="20"
+        <StackPanel Grid.Row="1"
+              
+              Margin="50"
               Visibility="{Binding InverseIsLoading}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+            
             <StackPanel Grid.Row="0" 
+                        Background="#181818"
                         Orientation="Horizontal"
-                 >
-                <TextBlock HorizontalAlignment="Center" 
-                           FontSize="16"  
+                        Height="35" Margin="0 0 0 10">
+                <TextBlock HorizontalAlignment="Center"  
+                           VerticalAlignment="Center"
+                           Margin="10 0 10 0"
                            Text="{Binding Notyfication, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></TextBlock>
             </StackPanel>
-            <Grid Grid.Column="1" 
+            <StackPanel Grid.Column="1" 
                   Grid.Row="1" 
-                  Background="White" 
-                  Margin="5">
-                <Grid Grid.Column="0">
+                  Background="#2e2e2e">
+                <Grid Grid.Column="0" Margin="10">
 
                     <StackPanel Visibility="{Binding IsRemove}">
                         <StackPanel Orientation="Horizontal" Grid.Row="0">
@@ -87,7 +90,7 @@
                             <Label FontSize="26" FontWeight="Bold" Content="LuCi Automation for Revit"></Label>
                         </StackPanel>
                         <StackPanel x:Name="InforCurrentVersion" Margin="60 0 0 0">
-                            <Label Content="Phiên bản hiện tại" FontWeight="Bold" Visibility="{Binding InverseIsCanInstall}"></Label>
+                            <Label Content="Current Version" FontWeight="Bold" Visibility="{Binding InverseIsCanInstall}"></Label>
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -95,15 +98,15 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Visibility="{Binding InverseIsCanInstall}">
                                     <StackPanel Orientation="Horizontal">
-                                        <Label Content="Version: " FontWeight="Bold"></Label>
+                                        <Label Content="Version: "></Label>
                                         <Label Content="{Binding CurrentVersion.Version,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" FontWeight="Bold"></Label>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
-                                        <Label Content="Mô tả: " FontWeight="Bold"></Label>
+                                        <Label Content="Discription: "></Label>
                                         <Label Content="{Binding CurrentVersion.Discreption,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></Label>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
-                                        <Label Content="Đăng tải: " FontWeight="Bold"></Label>
+                                        <Label Content="Time Update: "></Label>
                                         <Label Content="{Binding CurrentVersion.TimeUpdate,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></Label>
                                     </StackPanel>
                                 </StackPanel>
@@ -112,9 +115,9 @@
                                         <Button Content="Check Update" Height="25" Margin="10 3 10 3" Command="{Binding WindDowsLoadCommand}"></Button>
                                         <Button x:Name="btnMore" Content="More" Height="25" Margin="10 3 10 3" Click="btnMore_Click">
                                             <Button.ContextMenu>
-                                                <ContextMenu Name="menuMore">
-                                                    <MenuItem Header="Repair" Command="{Binding RepairCommand}"/>
-                                                    <MenuItem Header="UnInstall" Command="{Binding UnInstallCommand}"/>
+                                                <ContextMenu Name="menuMore" Background="#181818">
+                                                    <MenuItem Background="#181818" Header="Repair" Command="{Binding RepairCommand}"/>
+                                                    <MenuItem Background="#181818" Header="UnInstall" Command="{Binding UnInstallCommand}"/>
                                                 </ContextMenu>
                                             </Button.ContextMenu>
                                         </Button>
@@ -125,7 +128,7 @@
                             </Grid>
                         </StackPanel>
                         <StackPanel x:Name="InforCloudVersion" Visibility="{Binding IsCanUpdate}" Margin="60 0 0 0">
-                            <Label Content="Phiên bản mới" FontWeight="Bold"></Label>
+                            <Label Content="Update available" FontWeight="Bold"></Label>
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -133,15 +136,15 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
                                     <StackPanel Orientation="Horizontal">
-                                        <Label Content="Version: " FontWeight="Bold"></Label>
+                                        <Label Content="Version: "></Label>
                                         <Label Content="{Binding CloudVersion.Version,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" FontWeight="Bold"></Label>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
-                                        <Label Content="Mô tả: " FontWeight="Bold"></Label>
+                                        <Label Content="Discription: "></Label>
                                         <Label Content="{Binding CloudVersion.Discreption,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></Label>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
-                                        <Label Content="Đăng tải: " FontWeight="Bold"></Label>
+                                        <Label Content="Time Update: " ></Label>
                                         <Label Content="{Binding CloudVersion.TimeUpdate,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></Label>
                                     </StackPanel>
                                 </StackPanel>
@@ -150,7 +153,7 @@
                         </StackPanel>
                     </StackPanel>
                 </Grid>
-            </Grid>
-        </Grid>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Window>
