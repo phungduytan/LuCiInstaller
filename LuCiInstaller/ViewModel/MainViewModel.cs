@@ -320,9 +320,9 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
                IsRemove = Visibility.Visible;
                IsDownloading = Visibility.Collapsed;
                InverseIsDownloading = Visibility.Collapsed;
-               LuCiVersion cloudCurrentVersion = VersionFactory.LuCiVersions.Where(p => p.Version.Equals(CurrentVersion.Version)).First();
+               //LuCiVersion cloudCurrentVersion = VersionFactory.LuCiVersions.Where(p => p.Version.Equals(CurrentVersion.Version)).First();
                await this.VersionFactory.RemoveFileAsync(ProgressBarRemove);
-               cloudCurrentVersion.WiteToCurrentVersion();
+               //cloudCurrentVersion.WiteToCurrentVersion();
           }
           catch (Exception e)
           {
