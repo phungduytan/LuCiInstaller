@@ -7,47 +7,163 @@
         xmlns:i="clr-namespace:Microsoft.Xaml.Behaviors;assembly=Microsoft.Xaml.Behaviors"
         mc:Ignorable="d"
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
-        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen"
-        xmlns:converters="clr-namespace:LuCiInstaller.Converters"
+        Title="MainWindow" WindowStartupLocation="CenterScreen"
+        Foreground="White"
+         x:Name="main"
+        Background="#242424"
+       Height="600"
+        Width="800"
+        ResizeMode="NoResize"
         >
+    
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding WindDowsLoadCommand}" CommandParameter="{Binding ElementName=MainContentFrame}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <Window.Resources>
-        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
-    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="70"/>
+            <RowDefinition Height="80"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Border Background="Transparent" BorderThickness="1" BorderBrush="Black">
-            <Label  Margin="20 0 20 0" FontSize="36" FontWeight="Bold" >LuCi Tool Installer</Label>
+        <Border Background="Transparent" 
+                BorderThickness="2" 
+                BorderBrush="#2e2e2e"
+                Margin="-10 0 -10 0" >
+            <Label  Margin="50 0 50 0" 
+                    FontSize="30" 
+                    FontWeight="Bold" 
+                    VerticalContentAlignment="Center">Installer</Label>
         </Border>
-        <Grid Grid.Row="1"
-            Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <metro:ProgressRing  IsActive="True" Height="30" HorizontalAlignment="Left" Margin="10"/>
-                <TextBlock  Text=" Loading" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" />
+        <Grid Grid.Row="1" Visibility="{Binding IsLoading}">
+            <StackPanel Orientation="Horizontal" 
+                        HorizontalAlignment="Center">
+                <metro:ProgressRing  IsActive="True" 
+                                     Height="30" 
+                                     HorizontalAlignment="Left" 
+                                     Margin="10"
+                                     Visibility="{Binding IsLoading}"/>
+                <TextBlock  Text=" Loading" 
+                            FontSize="16" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Center" 
+                            Visibility="{Binding IsLoading}"/>
             </StackPanel>
-           
         </Grid>
-        <Grid Grid.Row="1" Margin="20"
-               Visibility="{Binding IsLoading, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Orientation="Horizontal"
-                 >
-                <TextBlock HorizontalAlignment="Center" FontSize="16"  Text="{Binding Notyfication, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></TextBlock>
+        <StackPanel Grid.Row="1"
+              
+              Margin="50"
+              Visibility="{Binding InverseIsLoading}">
+            
+            <StackPanel Grid.Row="0" 
+                        Background="#181818"
+                        Orientation="Horizontal"
+                        Height="35" Margin="0 0 0 10">
+                <TextBlock HorizontalAlignment="Center"  
+                           VerticalAlignment="Center"
+                           Margin="10 0 10 0"
+                           Text="{Binding Notyfication, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></TextBlock>
             </StackPanel>
-            <Grid Grid.Column="1" Grid.Row="1" Background="White" Margin="5">
-                <Frame Content="{Binding CurrentPage}"/>
-            </Grid>
-        </Grid>
+            <StackPanel Grid.Column="1" 
+                  Grid.Row="1" 
+                  Background="Transparent">
+                <Grid Grid.Column="0"  Background="Transparent">
+                    <StackPanel Visibility="{Binding IsRemove}" >
+                        <StackPanel Orientation="Horizontal" Grid.Row="0">
+                            <TextBlock Text="UnInstall: "/>
+                            <TextBlock Text="{Binding VersionFactory.RemovetNotify,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
+                        </StackPanel>
+                        <ProgressBar Name="bar0" Height="8" Margin="0 10 0 10" Grid.Row="1"></ProgressBar>
+                    </StackPanel>
+
+                    <StackPanel Visibility="{Binding IsDownloading}" >
+                        <StackPanel Orientation="Horizontal" Grid.Row="0">
+                            <TextBlock Text="Download: "/>
+                            <TextBlock Text="{Binding VersionFactory.DownloadNotify,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
+                        </StackPanel>
+                        <ProgressBar Name="bar1" Height="8" Margin="0 10 0 10" Grid.Row="1"></ProgressBar>
+                        <StackPanel Orientation="Horizontal" Grid.Row="2">
+                            <TextBlock Text="Install: "/>
+                            <TextBlock Text="{Binding VersionFactory.ExtractNotify,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
+                        </StackPanel>
+                        <ProgressBar x:Name="bar2" Height="8" Margin="0 10 0 10" Grid.Row="3"></ProgressBar>
+                    </StackPanel>
+
+                    <StackPanel Visibility="{Binding InverseIsDownloading}">
+                        <StackPanel Background="#2e2e2e">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Img/LogoTest.png" Height="50"></Image>
+                                <Label FontSize="26" FontWeight="Bold" Content="Automation for Revit"></Label>
+                            </StackPanel>
+                            <StackPanel x:Name="InforCurrentVersion" Margin="60 0 0 0">
+                                <Label Content="Current Version" FontWeight="Bold" Visibility="{Binding InverseIsCanInstall}"></Label>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="150"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Visibility="{Binding InverseIsCanInstall}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="Version: "></Label>
+                                            <Label Content="{Binding CurrentVersion.Version,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" FontWeight="Bold"></Label>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="Discription: "></Label>
+                                            <Label Content="{Binding CurrentVersion.Discreption,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></Label>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="Time Update: "></Label>
+                                            <Label Content="{Binding CurrentVersion.TimeUpdate,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></Label>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <Grid Grid.Column="1">
+                                        <StackPanel Orientation="Vertical" Visibility="{Binding InverseIsCanInstall}">
+                                            <Button Content="Check Update" Height="25" Margin="10 3 10 3" Command="{Binding WindDowsLoadCommand}"></Button>
+                                            <Button x:Name="btnMore" Content="More" Height="25" Margin="10 3 10 3" Click="btnMore_Click">
+                                                <Button.ContextMenu>
+                                                    <ContextMenu Name="menuMore" Background="#181818">
+                                                        <MenuItem Background="#181818" Header="Repair" Command="{Binding RepairCommand}"/>
+                                                        <MenuItem Background="#181818" Header="UnInstall" Command="{Binding UnInstallCommand}"/>
+                                                    </ContextMenu>
+                                                </Button.ContextMenu>
+                                            </Button>
+
+                                        </StackPanel>
+
+                                    </Grid>
+                                </Grid>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Margin="0 10 0 0" Background="#2e2e2e">
+                            <StackPanel x:Name="InforCloudVersion" Visibility="{Binding IsCanUpdate}" Margin="60 0 0 0">
+                                <Label Content="Update available" FontWeight="Bold"></Label>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="150"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="Version: "></Label>
+                                            <Label Content="{Binding CloudVersion.Version,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" FontWeight="Bold"></Label>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="Discription: "></Label>
+                                            <Label Content="{Binding CloudVersion.Discreption,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></Label>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="Time Update: " ></Label>
+                                            <Label Content="{Binding CloudVersion.TimeUpdate,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></Label>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Content="Install" Height="25" Margin="10 3 10 3" Command="{Binding UpdateCommand}" CommandParameter="{Binding ElementName=main}"></Button>
+                                </Grid>
+                            </StackPanel>
+                        </StackPanel>
+                        
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Window>

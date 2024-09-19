@@ -12,6 +12,10 @@ public class LuCiVersion : ObservableObject
      public int VersionNumber3 { get; set; }
      public string Discreption { get; set; }
      public string TimeUpdate { get; set; }
+     public LuCiVersion() 
+     {
+          Version = "0.0.0"; VersionNumber1 = 0; VersionNumber2 = 0;VersionNumber3 = 0; Discreption = "";TimeUpdate = "";
+     }
      public LuCiVersion(string version, string discreption, string timeUpdae)
      {
           Version = version;
@@ -61,7 +65,7 @@ public class LuCiVersion : ObservableObject
                writer.Close();
           }
      }
-     public static LuCiVersion ReadCurrentVersion()
+     public LuCiVersion ReadCurrentVersion()
      {
           string filePath = @"C:\ProgramData\Autodesk\ApplicationPlugins\LuCi.RevitAutomation.bundle\Verion.txt";
           string version = null;
@@ -80,6 +84,6 @@ public class LuCiVersion : ObservableObject
           {
                return null;
           }
-          return new LuCiVersion(version!, discreption!, timeUpdate!);
+          return new LuCiVersion(version, discreption, timeUpdate);
      }
 }
