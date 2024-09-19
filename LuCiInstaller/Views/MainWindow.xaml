@@ -160,7 +160,11 @@
                                 </Grid>
                             </StackPanel>
                         </StackPanel>
-                        
+                        <StackPanel>
+                            <TextBlock Text="{Binding CurrentUser.Username,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
+                            <TextBlock Text="{Binding CurrentUser.Password,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
+
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
             </StackPanel>

@@ -1,21 +1,11 @@
 ﻿using LuCiInstaller.ViewModel;
 using LuCiInstaller.Views.TrayIconView;
 using Microsoft.Win32;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Windows = System.Windows;
 using Forms = System.Windows.Forms;
 using System.Drawing;
-using System.Net.WebSockets;
 
 namespace LuCiInstaller.Views
 {
@@ -35,7 +25,7 @@ namespace LuCiInstaller.Views
                try
                {
                     regkey.SetValue("Index", keyvalue);
-                    regstart.SetValue("LuCiInstall", Windows.Application.Current + "\\LuCiInstaller.exe");
+                    regstart.SetValue("LuCiInstall", System.Windows.Application.Current + "\\LuCiInstaller.exe");
                     regkey.Close();
                }
                catch (System.Exception ex)
@@ -45,11 +35,11 @@ namespace LuCiInstaller.Views
                DataContext = mainViewModel;
              
                
-               CreateSystemTrayIcon();
+               //CreateSystemTrayIcon();
           }
           private void btnMore_Click(object sender, RoutedEventArgs e)
           {
-               Windows.Controls.ContextMenu contextMenu = btnMore.ContextMenu;
+               System.Windows.Controls.ContextMenu contextMenu = btnMore.ContextMenu;
                contextMenu.PlacementTarget = btnMore;
                contextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom; // Hiển thị dưới nút
                contextMenu.HorizontalOffset = 0; // Điều chỉnh vị trí theo chiều ngang nếu cần
@@ -86,7 +76,7 @@ namespace LuCiInstaller.Views
           private void ExitApplication()
           {
                _notifyIcon.Dispose();
-               Windows.Application.Current.Shutdown();
+               System.Windows.Application.Current.Shutdown();
           }
 
           // Optional: Hide the window instead of closing it

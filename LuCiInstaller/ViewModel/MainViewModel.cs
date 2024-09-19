@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LuCiInstaller.Models;
 using LuCiInstaller.VersionExtensions;
+using Microsoft.Data.SqlClient;
 using SharpCompress;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -133,15 +135,64 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
           set { progressBarRemove = value; OnPropertyChanged(); }
      }
 
+     private LuCiBimAccount currentUser;
+     public LuCiBimAccount CurrentUser
+     {
+          get { return currentUser; }
+          set { CurrentUser = value; OnPropertyChanged(); }
+     }
+
      public MainViewModel(ProgressBar progressBar1, ProgressBar progressBar2, ProgressBar progressBar0)
      {
+          string connectionString = App.ConnectionString; // Chuỗi kết nối từ App.xaml.cs hoặc appsettings.json
+          dbService = new LuCiBimDatabaseService(connectionString);
           progressBarRemove = progressBar0;
           ProgressBarDownload = progressBar1;
           ProgressBarExtrac = progressBar2;
           this.currentVersion = new LuCiVersion();
-          //CheckUpdate();
-       
+          this.currentUser = GetAllFromTable1().First();   
 
+
+     }
+     public List<LuCiBimAccount> GetAllFromTable1()
+     {
+          List<LuCiBimAccount> records = new List<LuCiBimAccount>();
+
+          using (SqlConnection connection = new SqlConnection(App.ConnectionString))
+          {
+               connection.Open();
+               string query = "SELECT * FROM dbo.Account";
+               using (SqlCommand command = new SqlCommand(query, connection))
+               {
+                    try
+                    {
+                         using (SqlDataReader reader = command.ExecuteReader())
+                         {
+
+                              while (reader.Read())
+                              {
+                                   LuCiBimAccount record = new LuCiBimAccount
+                                   {
+                                        Username = reader["Username"].ToString(),
+                                        Password = reader["Password"].ToString(),
+                                        // Các thuộc tính khác...
+                                   };
+                                   records.Add(record);
+                              }
+
+                              reader.Close();
+                         }
+                    }
+                    catch (SqlException ex)
+                    {
+                         MessageBox.Show($"SQL Error: {ex.Message}");
+                    }
+               }
+
+              
+          }
+
+          return records;
      }
      private async Task CheckUpdate() {
 
@@ -380,6 +431,21 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
                }
           }
           app.IsEnabled = true;
+     }
+     private LuCiBimDatabaseService dbService;
+     public void AddRecordToTable1(LuCiBimAccount newRecord)
+     {
+          dbService.AddToTable1(newRecord);
+     }
+
+     public void UpdateRecordInTable1(LuCiBimAccount updatedRecord)
+     {
+          dbService.UpdateTable1(updatedRecord);
+     }
+
+     public void DeleteRecordFromTable1(int id)
+     {
+          dbService.DeleteFromTable1(id);
      }
 }
 
