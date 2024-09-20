@@ -33,18 +33,9 @@ namespace LuCiInstaller.Views
                }
                MainViewModel mainViewModel = new MainViewModel(bar1, bar2, bar0);
                DataContext = mainViewModel;
-             
-               
-               //CreateSystemTrayIcon();
-          }
-          private void btnMore_Click(object sender, RoutedEventArgs e)
-          {
-               System.Windows.Controls.ContextMenu contextMenu = btnMore.ContextMenu;
-               contextMenu.PlacementTarget = btnMore;
-               contextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom; // Hiển thị dưới nút
-               contextMenu.HorizontalOffset = 0; // Điều chỉnh vị trí theo chiều ngang nếu cần
-               contextMenu.VerticalOffset = 5;
-               btnMore.ContextMenu.IsOpen = true;
+
+
+               CreateSystemTrayIcon();
           }
           private void CreateSystemTrayIcon()
           {

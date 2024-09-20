@@ -26,7 +26,7 @@ namespace LuCiInstaller.Models
                     string query = "INSERT INTO Account (Username, Password, Email, FullName,PhoneNumber,IsAdmin,CreateDate,LastLoginDate,IsActive) VALUES (@Username, @Password, @Email, @FullName,@PhoneNumber,@IsAdmin,@CreateDate,@LastLoginDate,@IsActive)";
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@Username", ac.Username);
-                    command.Parameters.AddWithValue("@Password", ac.Password);
+                    command.Parameters.AddWithValue("@Password", ac.PasswordHash);
                     command.Parameters.AddWithValue("@Email", ac.Email);
                     command.Parameters.AddWithValue("@FullName", ac.FullName);
                     command.Parameters.AddWithValue("@PhoneNumber", ac.PhoneNumber);
@@ -48,7 +48,7 @@ namespace LuCiInstaller.Models
                     string query = "UPDATE Account SET Username = @Username, Password = @Password, Password = @Password, Email = @Email, FullName = @FullName, PhoneNumber = @PhoneNumber, IsAdmin = @IsAdmin, CreateDate = @CreateDate, IsActive = @IsActive WHERE AccountId = @AccountId";
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@Username", ac.Username);
-                    command.Parameters.AddWithValue("@Password", ac.Password);
+                    command.Parameters.AddWithValue("@Password", ac.PasswordHash);
                     command.Parameters.AddWithValue("@Email", ac.Email);
                     command.Parameters.AddWithValue("@FullName", ac.FullName);
                     command.Parameters.AddWithValue("@PhoneNumber", ac.PhoneNumber);

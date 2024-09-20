@@ -12,9 +12,6 @@ using Application = System.Windows.Application;
 
 namespace LuCiInstaller
 {
-     /// <summary>
-     /// Interaction logic for App.xaml
-     /// </summary>
      public partial class App : Application
      {
           public static string ConnectionString = "Data Source=mssql-183717-0.cloudclusters.net,10085;Persist Security Info=True;User ID=admin;Password=Duytan59nuce;Trust Server Certificate=True";
@@ -31,7 +28,6 @@ namespace LuCiInstaller
                     try
                     {
                          connection.Open();
-                         System.Windows.MessageBox.Show("Connected to Server");
                     }
                     catch (Exception ex)
                     {
@@ -44,5 +40,4 @@ namespace LuCiInstaller
                base.OnExit(e);
           }
      }
-
 }

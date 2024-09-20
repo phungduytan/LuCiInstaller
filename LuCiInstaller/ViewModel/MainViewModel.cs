@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using ASquare.WindowsTaskScheduler.Models;
+using ASquare.WindowsTaskScheduler;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LuCiInstaller.Models;
 using LuCiInstaller.VersionExtensions;
@@ -150,9 +152,7 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
           ProgressBarDownload = progressBar1;
           ProgressBarExtrac = progressBar2;
           this.currentVersion = new LuCiVersion();
-          this.currentUser = GetAllFromTable1().First();   
-
-
+          this.currentUser = GetAllFromTable1().First();
      }
      public List<LuCiBimAccount> GetAllFromTable1()
      {
@@ -161,7 +161,7 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
           using (SqlConnection connection = new SqlConnection(App.ConnectionString))
           {
                connection.Open();
-               string query = "SELECT * FROM dbo.Account";
+               string query = "SELECT * FROM LuCiBimData.dbo.Account";
                using (SqlCommand command = new SqlCommand(query, connection))
                {
                     try
@@ -174,7 +174,7 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
                                    LuCiBimAccount record = new LuCiBimAccount
                                    {
                                         Username = reader["Username"].ToString(),
-                                        Password = reader["Password"].ToString(),
+                                        PasswordHash = reader["PasswordHash"].ToString(),
                                         // Các thuộc tính khác...
                                    };
                                    records.Add(record);
@@ -196,7 +196,6 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
      }
      private async Task CheckUpdate() {
 
-          await Task.Delay(30000);
           while (true){
 
                var hour = DateTime.Now.Hour;
@@ -210,6 +209,9 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
                
           }
      }
+     /// <summary>
+     /// 
+     /// </summary>
      [RelayCommand]
      public async void WindDowsLoad()
      {
@@ -278,7 +280,7 @@ public partial class MainViewModel : ObservableObject, INotifyPropertyChanged
           }
      }
 
-     private async Task CheckUpdateProcess()
+     public async Task CheckUpdateProcess()
      {
           try
           {
